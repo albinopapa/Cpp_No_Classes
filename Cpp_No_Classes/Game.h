@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Graphics.h"
+#include "Units.h"
+#include <vector>
 
 namespace Window{ struct _Window; }
 
@@ -12,6 +14,8 @@ namespace Game
 
 		Graphics::_Graphics gfx;
 		Window::_Window& window;
+
+		std::vector<Units::_Unit> units;
 	};
 
 	void Go( _Game& game );

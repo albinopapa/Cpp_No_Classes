@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Game.h"
 #include "string_util.h"
+#include "Framework.h"
 
 INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, INT )
 {
@@ -11,7 +12,7 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, INT )
 
 		while( !window.wants_to_quit )
 		{
-			Window::ProcessMessages( window );
+			Framework::ProcessMessages( window );
 			Game::Go( game );
 		}
 	}

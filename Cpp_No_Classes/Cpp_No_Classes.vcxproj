@@ -144,15 +144,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D.cpp" />
+    <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Units.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Framework.h" />
     <ClInclude Include="Direct3D.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
@@ -160,6 +163,7 @@
     <ClInclude Include="LeanWindows.h" />
     <ClInclude Include="MathTypes.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Sprites.h" />
     <ClInclude Include="string_util.h" />
     <ClInclude Include="Units.h" />
     <ClInclude Include="Window.h" />

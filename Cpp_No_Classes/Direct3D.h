@@ -34,6 +34,4 @@ namespace Direct3D
 		ComPtr<ID3D11InputLayout>			pInputLayout;
 		ComPtr<ID3D11SamplerState>			pSamplerState;
 	};
-
-	void Present( const _Direct3D& d3d, const Color::_Color* pBuffer );
 }

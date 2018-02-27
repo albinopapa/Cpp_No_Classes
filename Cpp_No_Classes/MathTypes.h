@@ -2,17 +2,17 @@
 
 #include <cmath>
 #include <type_traits>
+#include <algorithm>
 
 namespace Math::Vector
 {
 	template<class T>
 	struct _Vec2
 	{
-		static constexpr size_t num_elements = 2;
 		static_assert( std::is_arithmetic_v<T>, "T must be arithmatic type." );
 
-		_Vec2() = default;
-		_Vec2( T X, T Y )
+		constexpr _Vec2() = default;
+		constexpr _Vec2( T X, T Y )
 			:
 			x( X ), y( Y )
 		{}
@@ -23,11 +23,10 @@ namespace Math::Vector
 	template<class T>
 	struct _Vec3
 	{
-		static constexpr size_t num_elements = 3;
 		static_assert( std::is_arithmetic_v<T>, "T must be arithmatic type." );
 
-		_Vec3() = default;
-		_Vec3( T X, T Y )
+		constexpr _Vec3() = default;
+		constexpr _Vec3( T X, T Y )
 			:
 			x( X ), y( Y )
 		{}
@@ -39,7 +38,7 @@ namespace Math::Vector
 template<template<class> class vectype,class T>
 struct num_elements
 {
-	static constexpr value = 1;
+	static constexpr size_t value = 1;
 };
 template<class T> struct num_elements<Math::Vector::_Vec2, T>
 {
@@ -75,8 +74,8 @@ namespace Math::Rect
 	{
 		static_assert( std::is_arithmetic_v<T>, "T must be arithmatic type." );
 
-		_Rect() = default;
-		_Rect( T Left, T Top, T Right, T Bottom )
+		constexpr _Rect() = default;
+		constexpr _Rect( T Left, T Top, T Right, T Bottom )
 			:
 			left( Left ), top( Top ), right( Right ), bottom( Bottom )
 		{}
@@ -84,12 +83,22 @@ namespace Math::Rect
 		T left = 0, top = 0, right = 0, bottom = 0;
 	};
 
+	template<class T>
+	_Rect<T> Translate( const _Rect<T>& rect, const Vector::_Vec2<T>& delta )
+	{
+		return { 
+			rect.left + delta.x,
+			rect.top + delta.y,
+			rect.right + delta.x,
+			rect.bottom + delta.y 
+		};
+	}
 }
 // TODO: Make physics stuffs
 namespace
 {
 	template<template<class> class vectype, class T>
-	std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
+	constexpr std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
 		operator+( const vectype<T>& lhs, const vectype<T>& rhs )
 	{
 		vectype<T> res;
@@ -105,7 +114,7 @@ namespace
 	}
 
 	template<template<class> class vectype, class T>
-	std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
+	constexpr std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
 		operator+=( vectype<T>& lhs, const vectype<T>& rhs )
 	{
 		lhs = lhs + rhs;
@@ -114,7 +123,7 @@ namespace
 	}
 
 	template<template<class> class vectype, class T>
-	std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
+	constexpr std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
 		operator-( const vectype<T>& lhs, const vectype<T>& rhs )
 	{
 		vectype<T> res;
@@ -130,7 +139,7 @@ namespace
 	}
 
 	template<template<class> class vectype, class T>
-	std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>&
+	constexpr std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>&
 		operator-=( vectype<T>& lhs, const vectype<T>& rhs )
 	{
 		lhs = lhs - rhs;
@@ -138,7 +147,7 @@ namespace
 	}
 
 	template<template<class> class vectype, class T>
-	std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
+	constexpr std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
 		operator*( vectype<T>& lhs, const T rhs )
 	{
 		vectype<T> res;
@@ -153,7 +162,7 @@ namespace
 	}
 
 	template<template<class> class vectype, class T>
-	std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>&
+	constexpr std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>&
 		operator*=( vectype<T>& lhs, const T rhs )
 	{
 		lhs = lhs * rhs;
@@ -161,7 +170,7 @@ namespace
 	}
 
 	template<template<class> class vectype, class T>
-	std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
+	constexpr std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>
 		operator/( vectype<T>& lhs, const T rhs )
 	{
 		if constexpr( std::is_floating_point_v<T> )
@@ -182,7 +191,7 @@ namespace
 	}
 
 	template<template<class> class vectype, class T>
-	std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>&
+	constexpr std::enable_if_t<std::is_arithmetic_v<T>, vectype<T>>&
 		operator/=( vectype<T>& lhs, const T rhs )
 	{
 		lhs = lhs / rhs;
@@ -194,7 +203,7 @@ namespace
 namespace Math
 {
 	template<template<class> class vectype, class T>
-	std::enable_if_t<is_vector<vectype,T>::value, T>
+	constexpr std::enable_if_t<is_vector<vectype,T>::value, T>
 		DotProduct( const vectype<T>& lhs, const vectype<T>& rhs )
 	{
 		using vec = vectype<T>;
@@ -215,7 +224,7 @@ namespace Math
 	}
 
 	template<template<class> class vectype, class T>
-	std::enable_if_t<is_vector<vectype, T>::value, T>
+	constexpr std::enable_if_t<is_vector<vectype, T>::value, T>
 		LengthSq( const vectype<T>& lhs )
 	{
 		return DotProduct( lhs, lhs );
@@ -229,7 +238,7 @@ namespace Math
 	}
 
 	template<template<class> class vectype, class T>
-	std::enable_if_t<is_vector<vectype, T>::value, T>
+	constexpr std::enable_if_t<is_vector<vectype, T>::value, T>
 		DistanceSq( const vectype<T>& StartPt, const vectype<T>& EndPt )
 	{
 		return LengthSq( EndPt - StartPt );
@@ -237,13 +246,13 @@ namespace Math
 
 	template<template<class> class vectype, class T>
 	std::enable_if_t<is_vector<vectype, T>::value, T>
-		DistanceSq( const vectype<T>& StartPt, const vectype<T>& EndPt )
+		Distance( const vectype<T>& StartPt, const vectype<T>& EndPt )
 	{
 		return Length( EndPt - StartPt );
 	}
 
 	template<template<class> class vectype, class T>
-	auto CrossProduct( const vectype<T>& lhs, const vectype<T>& rhs )->
+	constexpr auto CrossProduct( const vectype<T>& lhs, const vectype<T>& rhs )->
 		typename cross_product_returns<vectype, T>::type
 	{
 		using vec = vectype<T>;
@@ -272,7 +281,7 @@ namespace Math
 	}
 
 	template<class T>
-	bool Overlaps( const Rect::_Rect<T>& r1, const Rect::_Rect<T>& r2 )
+	constexpr bool Overlaps( const Rect::_Rect<T>& r1, const Rect::_Rect<T>& r2 )
 	{
 		return
 			r1.left < r2.right && r1.right > r2.left &&
@@ -280,7 +289,7 @@ namespace Math
 	}
 
 	template<class T>
-	bool Contians( const Rect::_Rect<T>& r1, const Rect::_Rect<T>& r2 )
+	constexpr bool Contians( const Rect::_Rect<T>& r1, const Rect::_Rect<T>& r2 )
 	{
 		const auto res_v2 =
 			r1.left < r2.left && r1.right > r2.right &&
@@ -288,11 +297,16 @@ namespace Math
 	}
 
 	template<class T>
-	bool Contians( const Rect::_Rect<T>& rect, const Math::Vector::_Vec2<T>& pt )
+	constexpr bool Contians( const Rect::_Rect<T>& rect, const Math::Vector::_Vec2<T>& pt )
 	{
 		const auto res_v2 =
 			rect.left < pt.x && rect.right > pt.x &&
 			rect.top < pt.y && rect.bottom > pt.y;
 	}
 
+	template<class T>
+	T clamp( const T value, const T min_value, const T max_value )
+	{
+		return std::max( min_value, std::min( value, max_value ) );
+	}
 }
