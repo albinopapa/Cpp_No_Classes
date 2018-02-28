@@ -2,6 +2,41 @@
 #include "Graphics.h"
 #include "Framework.h"
 
+
+namespace Units::Builder
+{
+	void Update( _Unit& unit, float dt );
+}
+namespace Units::Farmer
+{
+	void Update( _Unit& unit, float dt );
+}
+namespace Units::Fisher
+{
+	void Update( _Unit& unit, float dt );
+}
+namespace Units::Gatherer
+{
+	void Update( _Unit& unit, float dt );
+}
+namespace Units::FootSoldier
+{
+	void Update( _Unit& unit, float dt );
+}
+namespace Units::Mounted
+{
+	void Update( _Unit& unit, float dt );
+}
+namespace Units::Naval
+{
+	void Update( _Unit& unit, float dt );
+}
+namespace Units::Scout
+{
+	void Update( _Unit& unit, float dt );
+}
+
+
 namespace Units
 {
 	_Unit::_Unit( float Attack, float HP, float Armor, Job _Job, Team _Team )
@@ -36,6 +71,11 @@ namespace Units
 				break;
 		}
 	}
+	_Unit::operator Game::_Entity()const
+	{
+		return entity;
+	}
+
 	void Update( _Unit& unit, float dt )
 	{
 		if( unit.vtable.Update )

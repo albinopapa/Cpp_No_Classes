@@ -4,6 +4,8 @@
 #include "Direct3D.h"
 #include <memory>
 
+namespace Window{ struct _Window; }
+
 namespace Graphics
 {
 	constexpr int32_t ScreenWidth = 800;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics.h"
+#include "Grid.h"
 #include "Units.h"
 #include <vector>
 
@@ -16,6 +17,7 @@ namespace Game
 		Window::_Window& window;
 
 		std::vector<Units::_Unit> units;
+		_Grid grid;
 	};
 
 	void Go( _Game& game );

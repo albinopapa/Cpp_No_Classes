@@ -11,6 +11,7 @@ namespace Graphics
 {
 	struct _Graphics;
 	struct _Sprite;
+	struct _AnimatedSprite;
 }
 namespace Keyboard
 {
@@ -29,8 +30,7 @@ namespace Widnow
 
 using EffectFn = Color::_Color( *)( 
 	Graphics::_Graphics& gfx, 
-	int32_t X, int32_t Y, 
-	const Graphics::_Sprite& sprite,
+	const Color::_Color src1,
 	const Color::_Color src2 );
 
 
@@ -62,6 +62,7 @@ namespace Framework
 	// Sprite methods
 
 	Graphics::_Sprite Copy( const Graphics::_Sprite& source );
+	void AdvanceFrame( Graphics::_AnimatedSprite& _this, float dt );
 
 	// Graphics methods
 
@@ -70,11 +71,7 @@ namespace Framework
 	void DrawRect( Graphics::_Graphics& gfx, int32_t X, int32_t Y, int32_t Width, int32_t Height, Color::_Color C, bool Filled = true );
 	void DrawCircle( Graphics::_Graphics& gfx, int32_t X, int32_t Y, int32_t Radius, Color::_Color C, bool Filled = true );
 	void DrawLine( Graphics::_Graphics& gfx, int32_t StartX, int32_t StartY, int32_t EndX, int32_t EndY, Color::_Color C );
-	void DrawSprite(
-		Graphics::_Graphics& gfx,
-		const int32_t X,
-		const int32_t Y,
-		const Graphics::_Sprite& Sprite );
+	void DrawSprite( Graphics::_Graphics& gfx, const int32_t X, const int32_t Y, const Graphics::_Sprite& Sprite );
 	void PutPixel( Graphics::_Graphics& gfx, int32_t X, int32_t Y, Color::_Color C );
 
 	// Direct3D methods

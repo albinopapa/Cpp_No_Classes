@@ -11,7 +11,6 @@ struct FSQVertex
 	float u, v;			// texcoords
 };
 
-namespace Color{ struct _Color; }
 namespace Window{ struct _Window; }
 
 namespace Direct3D

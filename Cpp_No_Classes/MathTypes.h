@@ -310,3 +310,20 @@ namespace Math
 		return std::max( min_value, std::min( value, max_value ) );
 	}
 }
+
+namespace Math
+{
+	template<int32_t Den>
+	struct Percent
+	{
+		static constexpr int32_t denominator = Den;
+		int32_t numerator = 0;
+	};
+
+	template<class T>
+	constexpr int32_t get( const T perc )
+	{
+		return ( perc.numerator * 100 ) / perc.denominator;
+	}
+
+}

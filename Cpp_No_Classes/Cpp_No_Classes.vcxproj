@@ -143,24 +143,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="COMInitializer.cpp" />
+    <ClCompile Include="ComponentInitter.cpp" />
     <ClCompile Include="Direct3D.cpp" />
+    <ClCompile Include="DXErr.cpp" />
+    <ClCompile Include="DXException.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Units.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ChiliException.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="COMInitializer.h" />
+    <ClInclude Include="ComponentInitter.h" />
+    <ClInclude Include="DXErr.h" />
+    <ClInclude Include="DXException.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Direct3D.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LeanWindows.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="MathTypes.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Sprites.h" />

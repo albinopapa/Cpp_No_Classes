@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Entity.h"
 #include "MathTypes.h"
 #include <cstdint>
 
@@ -10,6 +11,8 @@ namespace Graphics
 
 namespace Units
 {
+	struct _Unit;
+
 	enum class Team
 	{
 		Red,Blue
@@ -122,6 +125,9 @@ namespace Units
 	{
 		_Unit( float Attack, float HP, float Armor, Job _Job, Team _Team );
 
+		operator Game::_Entity()const;
+
+		static constexpr Game::_Entity entity = { Game::Occupant::Unit };
 		static constexpr Math::Rect::_Rect<int32_t> rect = { -16,-32,16,32 };
 		static constexpr size_t max_aniframes = 16u;
 		
@@ -150,36 +156,48 @@ namespace Units
 	void ClampToScreen( _Unit& unit );
 }
 
-namespace Units::Builder
+namespace Buildings
 {
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Farmer
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Fisher
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Gatherer
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::FootSoldier
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Mounted
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Naval
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Scout
-{
-	void Update( _Unit& unit, float dt );
-}
+	enum class Type
+	{
+		Hut,House,Mansion,Tent,
+		Butcher,Market,Warehouse,
+		Barracks,Stable,Port
+	};
 
+	template<Type T> struct traits
+	{};
+	template<> struct traits<Type::Hut>
+	{
+	};
+	template<> struct traits<Type::House>
+	{};
+	template<> struct traits<Type::Mansion>
+	{};
+	template<> struct traits<Type::Tent>
+	{};
+	template<> struct traits<Type::Butcher>
+	{};
+	template<> struct traits<Type::Market>
+	{};
+	template<> struct traits<Type::Warehouse>
+	{};
+	template<> struct traits<Type::Barracks>
+	{};
+	template<> struct traits<Type::Stable>
+	{};
+	template<> struct traits<Type::Port>
+	{};
+
+	
+	struct _Building
+	{
+		int32_t fire_resistance;
+		int32_t melee_resistance;
+		int32_t projectile_resistance;
+		int32_t width, height;
+
+		float max_hp;
+		float hp;
+	};
+}

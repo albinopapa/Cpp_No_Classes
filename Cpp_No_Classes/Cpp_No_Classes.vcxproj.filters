@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Game">
       <UniqueIdentifier>{23e34c02-31d5-4f35-9fc3-348ecfaf6eb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Framework\Imported">
+      <UniqueIdentifier>{c3509edb-09d4-46ca-8ec0-853848041c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Framework\Imported">
+      <UniqueIdentifier>{83f64433-c868-4ce5-a1fc-dc1e8d15f590}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D.cpp">
@@ -53,6 +59,30 @@
     </ClCompile>
     <ClCompile Include="Units.cpp">
       <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="COMInitializer.cpp">
+      <Filter>Source Files\Framework\Imported</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentInitter.cpp">
+      <Filter>Source Files\Framework\Imported</Filter>
+    </ClCompile>
+    <ClCompile Include="DXErr.cpp">
+      <Filter>Source Files\Framework\Imported</Filter>
+    </ClCompile>
+    <ClCompile Include="DXException.cpp">
+      <Filter>Source Files\Framework\Imported</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageLoader.cpp">
+      <Filter>Source Files\Framework\Imported</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Source Files\Framework\Imported</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprites.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +124,33 @@
     </ClInclude>
     <ClInclude Include="Units.h">
       <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="COMInitializer.h">
+      <Filter>Header Files\Framework\Imported</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentInitter.h">
+      <Filter>Header Files\Framework\Imported</Filter>
+    </ClInclude>
+    <ClInclude Include="DXErr.h">
+      <Filter>Header Files\Framework\Imported</Filter>
+    </ClInclude>
+    <ClInclude Include="DXException.h">
+      <Filter>Header Files\Framework\Imported</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageLoader.h">
+      <Filter>Header Files\Framework\Imported</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Header Files\Framework\Imported</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliException.h">
+      <Filter>Header Files\Framework\Imported</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -50,6 +50,18 @@ namespace Framework
 
 		return result;
 	}
+	void AdvanceFrame( Graphics::_AnimatedSprite& _this, float dt )
+	{
+		_this.curHoldTime += dt;
+		if(_this.curHoldTime >= _this.holdFrameTime)
+		{
+			++_this.cur_frame;
+			if( _this.cur_frame == _this.frames.end() )
+			{
+				_this.cur_frame = _this.frames.begin();
+			}
+		}
+	}
 
 	// Graphics methods
 
@@ -170,19 +182,18 @@ namespace Framework
 			}
 		}
 	}
-	void DrawSprite(
-		_Graphics& gfx,
-		const int32_t X,
-		const int32_t Y,
-		const _Sprite& Sprite )
+	void DrawSprite( _Graphics& gfx, const int32_t X, const int32_t Y, const _Sprite& Sprite )
 	{
 		for( int32_t dy = Y, sy = 0; dy < Y + Sprite.height; ++dy, ++sy )
 		{
 			for( int32_t dx = X, sx = 0; dx < X + Sprite.width; ++dx, ++sx )
 			{
+				const auto src_idx = sx + ( sy * Sprite.width );
 				const auto dst_idx = dx + ( dy * Graphics::ScreenWidth );
-				PutPixel( gfx, dx, dy, 
-					Sprite.effect( gfx, sx, sy, Sprite, gfx.pBuffer[ dst_idx ] ) );
+				auto color =
+					Sprite.effect( gfx, Sprite.frame[ src_idx ], gfx.pBuffer[ dst_idx ] );
+
+				PutPixel( gfx, dx, dy, color );
 			}
 		}
 	}

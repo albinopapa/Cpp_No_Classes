@@ -1,7 +1,6 @@
 #include "Game.h"
 #include "Window.h"
 #include "Framework.h"
-
 #include <random>
 
 namespace Game
@@ -91,6 +90,8 @@ namespace Game
 		for( auto unit : game.units )
 		{
 			Units::Update( unit, .016f );
+
+			AddEntity( game.grid, unit, unit.position );
 		}
 	}
 	void ComposeFrame( _Game& game )
