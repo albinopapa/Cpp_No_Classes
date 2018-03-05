@@ -22,6 +22,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 25;
 			static constexpr int32_t width = 2, height = 2;
 			static constexpr int32_t max_hp = 1000;
+			static constexpr int32_t num_occupants = 2;
 		};
 		template<> struct traits<Type::House>
 		{
@@ -30,6 +31,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 125;
 			static constexpr int32_t width = 3, height = 3;
 			static constexpr int32_t max_hp = 1500;
+			static constexpr int32_t num_occupants = 4;
 		};
 		template<> struct traits<Type::Mansion>
 		{
@@ -38,6 +40,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 500;
 			static constexpr int32_t width = 5, height = 5;
 			static constexpr int32_t max_hp = 2500;
+			static constexpr int32_t num_occupants = 8;
 		};
 		template<> struct traits<Type::Tent>
 		{
@@ -46,6 +49,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 0;
 			static constexpr int32_t width = 1, height = 1;
 			static constexpr int32_t max_hp = 500;
+			static constexpr int32_t num_occupants = 1;
 		};
 		template<> struct traits<Type::Butcher>
 		{
@@ -54,6 +58,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 500;
 			static constexpr int32_t width = 3, height = 3;
 			static constexpr int32_t max_hp = 2500;
+			static constexpr int32_t num_occupants = 3;
 		};
 		template<> struct traits<Type::Market>
 		{
@@ -62,6 +67,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 10;
 			static constexpr int32_t width = 5, height = 5;
 			static constexpr int32_t max_hp = 1500;
+			static constexpr int32_t num_occupants = 20;
 		};
 		template<> struct traits<Type::Warehouse>
 		{
@@ -70,6 +76,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 1000;
 			static constexpr int32_t width = 5, height = 5;
 			static constexpr int32_t max_hp = 3000;
+			static constexpr int32_t num_occupants = 30;
 		};
 		template<> struct traits<Type::Barracks>
 		{
@@ -78,6 +85,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 1000;
 			static constexpr int32_t width = 5, height = 5;
 			static constexpr int32_t max_hp = 3000;
+			static constexpr int32_t num_occupants = 30;
 		};
 		template<> struct traits<Type::Stable>
 		{
@@ -86,6 +94,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 200;
 			static constexpr int32_t width = 3, height = 3;
 			static constexpr int32_t max_hp = 2000;
+			static constexpr int32_t num_occupants = 6;
 		};
 		template<> struct traits<Type::Port>
 		{
@@ -94,6 +103,7 @@ namespace Game
 			static constexpr int32_t projectile_resistance = 1500;
 			static constexpr int32_t width = 3, height = 3;
 			static constexpr int32_t max_hp = 2000;
+			static constexpr int32_t num_occupants = 30;
 		};
 
 
@@ -108,6 +118,7 @@ namespace Game
 				int32_t _width,
 				int32_t _height,
 				int32_t _hp,
+				int32_t num_occupants,
 				Team _team,
 				Type _type );
 

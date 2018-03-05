@@ -161,6 +161,9 @@
     <ClInclude Include="Buildings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UserInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FramebufferVS.hlsl" />

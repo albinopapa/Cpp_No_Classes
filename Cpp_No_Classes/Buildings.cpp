@@ -13,6 +13,7 @@ namespace Game::Buildings
 			traits<t>::width,
 			traits<t>::height,
 			traits<t>::max_hp,
+			traits<t>::num_occupants,
 			_team,
 			t
 		);
@@ -63,6 +64,7 @@ namespace Game::Buildings
 		int32_t _width,
 		int32_t _height,
 		int32_t _hp,
+		int32_t num_occupants, 
 		Team _team,
 		Type _type )
 	{}
