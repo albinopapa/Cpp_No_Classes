@@ -1,6 +1,6 @@
 #include "Keyboard.h"
 
-namespace Keyboard
+namespace Framework::Input::Keyboard
 {
 	Event::Event( State S, uint8_t Keycode )
 		:

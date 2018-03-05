@@ -11,7 +11,7 @@ namespace FramebufferShaders
 #include "FramebufferVS.shh"
 }
 
-namespace Direct3D
+namespace Framework::Direct3D
 {
 	_Direct3D::_Direct3D( Window::_Window& window )
 	{

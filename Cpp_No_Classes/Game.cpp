@@ -5,97 +5,62 @@
 
 namespace Game
 {
-	template<Units::Job _job>
-	Units::_Unit Create( Units::Team team)
-	{
-		/*return Units::_Unit(
-			Units::traits<Units::Job::Builder>::attack,
-			Units::traits<Units::Job::Builder>::base_hp,
-			Units::traits<Units::Job::Builder>::armor,
-			Units::traits<Units::Job::Builder>::job,
-			team
-		);*/
-		return Units::_Unit(
-			Units::traits<_job>::attack,
-			Units::traits<_job>::base_hp,
-			Units::traits<_job>::armor,
-			Units::traits<_job>::job,
-			team
-		);
-	}
-	
-	void CreateUnits( _Game& game )
-	{
-		game.units.reserve( 25 );
-
-		std::random_device rd;
-		std::mt19937 rng( rd() );
-		std::uniform_int_distribution<uint32_t> job_dist( 0, 7 );
-		std::uniform_int_distribution<uint32_t> team_dist( 0, 1 );
-
-		for( size_t i = 0; i < 25; ++i )
-		{
-			const auto job_idx = 
-				static_cast< Units::Job >( job_dist( rng ) );
-			const auto team_idx =
-				static_cast< Units::Team >( team_dist( rng ) );
-
-			switch( job_idx )
-			{
-				case Units::Job::Builder:
-					game.units.push_back( Create<Units::Job::Builder>( team_idx ) );
-					break;
-				case Units::Job::Farmer:
-					game.units.push_back( Create<Units::Job::Farmer>( team_idx ) );
-					break;
-				case Units::Job::Fisher:
-					game.units.push_back( Create<Units::Job::Fisher>( team_idx ) );
-					break;
-				case Units::Job::Gatherer:
-					game.units.push_back( Create<Units::Job::Gatherer>( team_idx ) );
-					break;
-				case Units::Job::FootSoldier:
-					game.units.push_back( Create<Units::Job::FootSoldier>( team_idx ) );
-					break;
-				case Units::Job::Mounted:
-					game.units.push_back( Create<Units::Job::Mounted>( team_idx ) );
-					break;
-				case Units::Job::Naval:
-					game.units.push_back( Create<Units::Job::Naval>( team_idx ) );
-					break;
-				case Units::Job::Scout:
-					game.units.push_back( Create<Units::Job::Scout>( team_idx ) );
-					break;
-			}
-		}
-	}
+	namespace Gfx = Framework::Graphics;
+	namespace Mouse = Framework::Input::Mouse;
+	namespace Keyboard = Framework::Input::Keyboard;
+	namespace Window = Framework::Window;
 
 	_Game::_Game( Window::_Window& _window )
 		:
 		window( _window ),
-		gfx( _window )
+		gfx( _window ),
+		grid( Gfx::ScreenWidth / 16, Gfx::ScreenHeight / 16 )
 	{
-		CreateUnits( *this );
+		{
+			auto& unit = units.emplace_back( Units::traits<Units::Job::Builder>(), Team::Red );
+			Units::SetPosition( unit, { 100.f,100.f } );
+		}
+		{
+			auto& unit = units.emplace_back( Units::traits<Units::Job::Builder>(), Team::Blue );
+			Units::SetPosition( unit, { 600.f,600.f } );
+		}
+
+		for( auto& unit : units )
+		{
+			Grid::AddEntity( grid, unit );
+		}
 	}
 
 	void Go( _Game& game )
 	{
-		Framework::BeginFrame( game.gfx, { 0,0,0 } );
+		Gfx::BeginFrame( game.gfx, { 0,0,0 } );
 		UpdateModel( game );
 		ComposeFrame( game );
-		Framework::EndFrame( game.gfx );
+		Gfx::EndFrame( game.gfx );
 	}
 	void UpdateModel( _Game& game )
 	{
-		for( auto unit : game.units )
-		{
-			Units::Update( unit, .016f );
+		const auto mousePos = Mouse::GetPosition( Window::GetMouse( game.window ) );
+		Grid::HighlightCell( game.grid, mousePos );
+				
+		const auto goal = Vec2f( float( mousePos.x ), float( mousePos.y ) );
 
-			AddEntity( game.grid, unit, unit.position );
+		for( auto& unit : game.units )
+		{
+			Units::Update( unit, .016f, game.grid );
+			const auto uniPos = Units::GetPosition( unit );
+			Grid::FindPath( game.grid, uniPos, goal );
+			while(!game.grid.goalFound)
+			{
+				Grid::FindPath( game.grid, uniPos, goal );
+			}
 		}
 	}
 	void ComposeFrame( _Game& game )
 	{
-		Framework::DrawRect( game.gfx, 100, 100, 30, 30, { 0, 255, 0 } );
+		for( const auto& unit : game.units )
+		{
+			Units::Draw( game.gfx, unit );
+		}
 	}
 }

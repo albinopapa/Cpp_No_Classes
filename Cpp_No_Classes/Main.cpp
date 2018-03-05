@@ -7,13 +7,13 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, INT )
 {
 	try
 	{
-		Window::_Window window;
+		Framework::Window::_Window window;
 		Game::_Game game( window );
 
 		while( !window.wants_to_quit )
 		{
-			Framework::ProcessMessages( window );
 			Game::Go( game );
+			Framework::Window::ProcessMessages( window );
 		}
 	}
 	catch( const std::exception& e)

@@ -1,6 +1,7 @@
 #include "Sprites.h"
+#include "ImageLoader.h"
 
-namespace Graphics
+namespace Framework::Graphics
 {
 	_Sprite::_Sprite( String::string Filename, const EffectFn Effect )
 		:
@@ -19,15 +20,15 @@ namespace Graphics
 
 		bitmap->CopyPixels(
 			nullptr,
-			static_cast<UINT>( w * sizeof( Color::_Color ) ),
-			static_cast<UINT>( w * sizeof( Color::_Color ) * h ),
+			static_cast<UINT>( w * sizeof( _Color ) ),
+			static_cast<UINT>( w * sizeof( _Color ) * h ),
 			reinterpret_cast< BYTE* >( frame.get() )
 		);
 	}
 	_Sprite::_Sprite( const size_t Width, const size_t Height, const EffectFn& Effect )
 		:
 		width( Width ), height( Height ),
-		frame( std::make_unique<Color::_Color[]>( Width * Height ) ),
+		frame( std::make_unique<_Color[]>( Width * Height ) ),
 		effect( Effect )
 	{}
 	_Sprite::_Sprite( _Sprite&& other )

@@ -1,23 +1,27 @@
 #pragma once
 
+#include "Entity.h"
 #include "Graphics.h"
 #include "Grid.h"
 #include "Units.h"
 #include <vector>
 
-namespace Window{ struct _Window; }
+namespace Framework::Window{ struct _Window; }
 
 namespace Game
 {
 	struct _Game
 	{
-		_Game(Window::_Window& _window);
+		_Game( Framework::Window::_Window& _window);
 
-		Graphics::_Graphics gfx;
-		Window::_Window& window;
+		Framework::Graphics::_Graphics gfx;
+		Framework::Window::_Window& window;
 
 		std::vector<Units::_Unit> units;
-		_Grid grid;
+		std::vector<Buildings::_Building> buildings;
+		Grid::_Grid grid;
+
+		Vec2i clickPos;
 	};
 
 	void Go( _Game& game );

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <queue>
 
-namespace Mouse
+namespace Framework::Input::Mouse
 {
 	enum class State
 	{

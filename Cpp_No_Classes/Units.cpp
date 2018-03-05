@@ -1,47 +1,31 @@
 #include "Units.h"
 #include "Graphics.h"
+#include "Grid.h"
 #include "Framework.h"
+#include <cassert>
 
 
-namespace Units::Builder
+// Private forward declarations
+namespace Game::Units
 {
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Farmer
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Fisher
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Gatherer
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::FootSoldier
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Mounted
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Naval
-{
-	void Update( _Unit& unit, float dt );
-}
-namespace Units::Scout
-{
-	void Update( _Unit& unit, float dt );
+	namespace Builder{ void Update( _Unit& unit, float dt, Grid::_Grid& grid ); }
+	namespace Farmer{ void Update( _Unit& unit, float dt, Grid::_Grid& grid ); }
+	namespace Fisher{ void Update( _Unit& unit, float dt, Grid::_Grid& grid ); }
+	namespace Gatherer{ void Update( _Unit& unit, float dt, Grid::_Grid& grid ); }
+	namespace FootSoldier{ void Update( _Unit& unit, float dt, Grid::_Grid& grid ); }
+	namespace Mounted{ void Update( _Unit& unit, float dt, Grid::_Grid& grid ); }
+	namespace Naval{ void Update( _Unit& unit, float dt, Grid::_Grid& grid ); }
+	namespace Scout{ void Update( _Unit& unit, float dt, Grid::_Grid& grid ); }
 }
 
-
-namespace Units
+// Units base class method definitions
+namespace Game::Units
 {
+	namespace Graphics = Framework::Graphics;
+
 	_Unit::_Unit( float Attack, float HP, float Armor, Job _Job, Team _Team )
 		:
-		attack( Attack ), hp( HP ), armor( Armor ), job( _Job ), team( _Team )
+		attack( Attack ), hp( HP ), armor( Armor ), job( _Job )
 	{
 		switch( job )
 		{
@@ -70,56 +54,82 @@ namespace Units
 				vtable.Update = &Scout::Update;
 				break;
 		}
+
+		entity.category = Game::EntityCategory::Unit;
 	}
-	_Unit::operator Game::_Entity()const
+	_Unit::operator _Entity&() 
+	{
+		return entity;
+	}
+	_Unit::operator const _Entity&( )const
 	{
 		return entity;
 	}
 
-	void Update( _Unit& unit, float dt )
+	void Update( _Unit& unit, float dt, Grid::_Grid& grid )
 	{
-		if( unit.vtable.Update )
-			unit.vtable.Update( unit, dt );
+		assert( unit.vtable.Update );
 
+		unit.vtable.Update( unit, dt, grid );
 		ClampToScreen( unit );
+	}
+	void ClampToScreen( _Unit& unit )
+	{
+		unit.entity.position.x = Math::clamp(
+			unit.entity.position.x, static_cast< float >( unit.rect.right ),
+			static_cast< float >( Graphics::ScreenWidth + unit.rect.left )
+		);
+		unit.entity.position.y = Math::clamp(
+			unit.entity.position.y, static_cast< float >( unit.rect.bottom ),
+			static_cast< float >( Graphics::ScreenHeight + unit.rect.top )
+		);
 	}
 	void Draw( Graphics::_Graphics& gfx, const _Unit& unit )
 	{
-		const auto color = unit.team == Team::Red ? 
-			Color::_Color{ 255, 0, 0 } : Color::_Color{ 0, 0, 255 };
+		const auto color = unit.entity.team == Team::Red ?
+			Graphics::_Color{ 255, 0, 0 } : Graphics::_Color{ 0, 0, 255 };
 
-		Framework::DrawRect(
+		auto rect = Math::Rect::Translate( unit.rect, Units::GetPosition( unit ) );
+
+		Graphics::DrawRect(
 			gfx,
-			unit.position.x,
-			unit.position.y,
-			unit.rect.right - unit.rect.left,
-			unit.rect.bottom - unit.rect.top,
+			rect.left,
+			rect.top,
+			rect.right -  rect.left,
+			rect.bottom - rect.top,
 			color
 		);
 	}
-	void SetAttackingUnit( _Unit& source, const _Unit& pAttacker )
-	{
-		source.p_attacker = &pAttacker;
-	}
 
+	Vec2f GetPosition( const _Unit& unit )
+	{
+		return Game::GetPosition( unit.entity );
+	}
+	Job GetJob( const _Unit& unit )
+	{
+		return unit.job;
+	}
 	bool IsAlive( const _Unit& unit )
 	{
 		return unit.hp > 0.f;
 	}
-	void ClampToScreen( _Unit& unit )
+	bool IsIdle( const _Unit& unit )
 	{
-		unit.position.x = Math::clamp(
-			unit.position.x, 0.f,
-			static_cast< float >( Graphics::ScreenWidth )
-		);
-		unit.position.y = Math::clamp(
-			unit.position.y, 0.f,
-			static_cast< float >( Graphics::ScreenHeight )
-		);
+		return unit.jobstate == JobState::isIdle;
+	}
+
+	void SetAttackingUnit( _Unit& source, const _Unit& pAttacker )
+	{
+		source.p_attacker = &pAttacker;
+	}
+	void SetPosition( _Unit& unit, const Vec2f position )
+	{
+		unit.entity.position = position;
 	}
 }
 
-namespace Units::Farmer
+// Derived class definitions
+namespace Game::Units::Builder
 {
 	void HandleIdle( _Unit& unit )
 	{
@@ -127,9 +137,59 @@ namespace Units::Farmer
 	}
 	void HandleTransitioning( _Unit& unit, float dt )
 	{
-		unit.position += ( unit.velocity * dt );
+		unit.entity.position += ( unit.entity.velocity * dt );
 	}
-	void HandleFarming( _Unit& unit )
+	void HandleAttacking( _Unit& unit )
+	{
+		++unit.aniframe;
+		unit.aniframe %= _Unit::max_aniframes;
+
+		if( !unit.p_attacker || !IsAlive( *unit.p_attacker ) )
+		{
+			unit.jobstate = JobState::isIdle;
+		}
+	}
+	void HandlePurchasing( _Unit& unit, float dt )
+	{
+		unit.entity.position += ( unit.entity.velocity * dt );
+	}
+	void HandleJob( _Unit& unit )
+	{
+
+	}
+	void Update( _Unit& unit, float dt, Grid::_Grid& grid )
+	{
+		switch( unit.jobstate )
+		{
+			case JobState::isAttacking:
+				HandleAttacking( unit );
+				break;
+			case JobState::isBuilding:
+				HandleJob( unit );
+				break;
+			case JobState::isIdle:
+				HandleIdle( unit );
+				break;
+			case JobState::isPurchasing:
+				HandlePurchasing( unit, dt );
+				break;
+			case JobState::isTransitioning:
+				HandleTransitioning( unit, dt );
+				break;
+		}
+	}
+}
+namespace Game::Units::Farmer
+{
+	void HandleIdle( _Unit& unit )
+	{
+		unit.jobstate = JobState::isPurchasing;
+	}
+	void HandleTransitioning( _Unit& unit, float dt )
+	{
+		unit.entity.position += ( unit.entity.velocity * dt );
+	}
+	void HandleJob( _Unit& unit )
 	{
 		++unit.aniframe;
 		unit.aniframe %= _Unit::max_aniframes;
@@ -146,10 +206,10 @@ namespace Units::Farmer
 	}
 	void HandlePurchasing( _Unit& unit, float dt )
 	{
-		unit.position += ( unit.velocity * dt );
+		unit.entity.position += ( unit.entity.velocity * dt );
 	}
 
-	void Update( _Unit& unit, float dt )
+	void Update( _Unit& unit, float dt, Grid::_Grid& grid )
 	{		
 		switch( unit.jobstate )
 		{
@@ -157,7 +217,7 @@ namespace Units::Farmer
 				HandleAttacking( unit );
 				break;
 			case JobState::isFarming:
-				HandleFarming( unit );
+				HandleJob( unit );
 				break;
 			case JobState::isIdle:
 				HandleIdle( unit );
@@ -172,48 +232,114 @@ namespace Units::Farmer
 	}
 
 }
-namespace Units::Fisher
+namespace Game::Units::Fisher
 {
-	void Update( _Unit& unit, float dt )
+	void Update( _Unit& unit, float dt, Grid::_Grid& grid )
 	{
 
 	}
 
 }
-namespace Units::Builder
+namespace Game::Units::Gatherer
 {
-	void Update( _Unit& unit, float dt )
+	void Update( _Unit & unit, float dt, Grid::_Grid& grid )
+	{}
+}
+namespace Game::Units::FootSoldier
+{
+	void Update( _Unit & unit, float dt, Grid::_Grid& grid )
+	{}
+}
+namespace Game::Units::Mounted
+{
+	void Update( _Unit & unit, float dt, Grid::_Grid& grid )
+	{}
+}
+namespace Game::Units::Naval
+{
+	void Update( _Unit & unit, float dt, Grid::_Grid& grid )
+	{}
+}
+namespace Game::Units::Scout
+{
+	void Update( _Unit & unit, float dt, Grid::_Grid& grid )
+	{}
+}
+
+// Building definitions
+namespace Game::Buildings
+{
+	template<Type t> _Building CreateBuilding( Team _team )
 	{
-
+		return _Building (
+			traits<t>::fire_resistance,
+			traits<t>::melee_resistance,
+			traits<t>::projectile_resistance,
+			traits<t>::width,
+			traits<t>::height,
+			traits<t>::max_hp,
+			_team,
+			t
+		);
 	}
-}
+	_Building::_Building( Team _team, Type _type )
+	{
+		switch( _type )
+		{
+			case Buildings::Type::Hut:
+				*this = CreateBuilding<Type::Hut>( _team );
+				break;
+			case Buildings::Type::House:
+				*this = CreateBuilding<Type::House>( _team );
+				break;
+			case Buildings::Type::Mansion:
+				*this = CreateBuilding<Type::Mansion>( _team );
+				break;
+			case Buildings::Type::Tent:
+				*this = CreateBuilding<Type::Tent>( _team );
+				break;
+			case Buildings::Type::Butcher:
+				*this = CreateBuilding<Type::Butcher>( _team );
+				break;
+			case Buildings::Type::Market:
+				*this = CreateBuilding<Type::Market>( _team );
+				break;
+			case Buildings::Type::Warehouse:
+				*this = CreateBuilding<Type::Warehouse>( _team );
+				break;
+			case Buildings::Type::Barracks:
+				*this = CreateBuilding<Type::Barracks>( _team );
+				break;
+			case Buildings::Type::Stable:
+				*this = CreateBuilding<Type::Stable>( _team );
+				break;
+			case Buildings::Type::Port:
+				*this = CreateBuilding<Type::Port>( _team );
+				break;
+			default:
+				break;
+		}
+				
+	}
+	_Building::_Building( 
+		int32_t _fire_resistance,
+		int32_t _melee_resistance,
+		int32_t _projectile_resistance,
+		int32_t _width,
+		int32_t _height,
+		int32_t _hp,
+		Team _team,
+		Type _type )
+	{
+	}
 
-namespace Units::Gatherer
-{
-	void Update( _Unit & unit, float dt )
-	{}
-}
+	_Building::operator _Entity&()
+	{
+		return entity;
+	}
+	_Building::operator const _Entity&( )const
+	{
+		return entity;
+	}
 
-namespace Units::FootSoldier
-{
-	void Update( _Unit & unit, float dt )
-	{}
-}
-
-namespace Units::Mounted
-{
-	void Update( _Unit & unit, float dt )
-	{}
-}
-
-namespace Units::Naval
-{
-	void Update( _Unit & unit, float dt )
-	{}
-}
-
-namespace Units::Scout
-{
-	void Update( _Unit & unit, float dt )
-	{}
 }

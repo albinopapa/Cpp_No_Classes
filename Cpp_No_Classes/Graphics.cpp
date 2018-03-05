@@ -1,8 +1,8 @@
 #include "Graphics.h"
 #include <cassert>
 
-Graphics::_Graphics::_Graphics( Window::_Window& window )
+Framework::Graphics::_Graphics::_Graphics( Framework::Window::_Window& window )
 	:
 	d3d( window ),
-	pBuffer( std::make_unique<Color::_Color[]>( ScreenWidth*ScreenHeight ) )
+	pBuffer( std::make_unique<Graphics::_Color[]>( ScreenWidth*ScreenHeight ) )
 {}

@@ -1,6 +1,6 @@
 #include "Mouse.h"
 
-namespace Mouse
+namespace Framework::Input::Mouse
 {
 	Event::Event( State S, int16_t X, int16_t Y )
 		:

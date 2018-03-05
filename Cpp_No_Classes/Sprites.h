@@ -2,14 +2,12 @@
 
 #include "Color.h"
 #include "Framework.h"
-#include "Graphics.h"
 #include "string_util.h"
-#include "ImageLoader.h"
 #include <memory>
 #include <vector>
 #include <iomanip>
 
-namespace Graphics
+namespace Framework::Graphics
 {
 	struct _Sprite
 	{
@@ -21,7 +19,7 @@ namespace Graphics
 		_Sprite& operator=( _Sprite&& other );
 
 		size_t width = 0, height = 0;
-		std::unique_ptr<Color::_Color[]> frame;
+		std::unique_ptr<_Color[]> frame;
 		EffectFn effect = nullptr;
 	};	
 
@@ -41,28 +39,28 @@ namespace Graphics
 	};
 }
 
-auto PassThrough = [](
-	Graphics::_Graphics& gfx,
-	const Color::_Color src1,
-	const Color::_Color src2 )->Color::_Color
+inline auto PassThrough = [](
+	Framework::Graphics::_Graphics& gfx,
+	const Framework::Graphics::_Color src1,
+	const Framework::Graphics::_Color src2 )->Framework::Graphics::_Color
 {	
 	return src1;
 };
 
-auto AlphaEffect = [](
-	Graphics::_Graphics& gfx,
-	const Color::_Color src1,
-	const Color::_Color src2 )->Color::_Color
+inline auto AlphaEffect = [](
+	Framework::Graphics::_Graphics& gfx,
+	const Framework::Graphics::_Color src1,
+	const Framework::Graphics::_Color src2 )->Framework::Graphics::_Color
 {
-	const auto src1a = Framework::GetA( src1 );
-	const auto src1r = Framework::GetR( src1 ) * src1a;
-	const auto src1g = Framework::GetG( src1 ) * src1a;
-	const auto src1b = Framework::GetB( src1 ) * src1a;
+	const auto src1a = Framework::Graphics::GetA( src1 );
+	const auto src1r = Framework::Graphics::GetR( src1 ) * src1a;
+	const auto src1g = Framework::Graphics::GetG( src1 ) * src1a;
+	const auto src1b = Framework::Graphics::GetB( src1 ) * src1a;
 
 	const auto src2a = 255ui8 - src1a;
-	const auto src2r = Framework::GetA( src2 ) * src2a;
-	const auto src2g = Framework::GetG( src2 ) * src2a;
-	const auto src2b = Framework::GetB( src2 ) * src2a;
+	const auto src2r = Framework::Graphics::GetA( src2 ) * src2a;
+	const auto src2g = Framework::Graphics::GetG( src2 ) * src2a;
+	const auto src2b = Framework::Graphics::GetB( src2 ) * src2a;
 
 	const auto resr = static_cast<uint8_t>( src1r + src2r );
 	const auto resg = static_cast<uint8_t>( src1g + src2g );

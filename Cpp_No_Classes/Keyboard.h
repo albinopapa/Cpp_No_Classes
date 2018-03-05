@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <queue>
 
-namespace Keyboard
+namespace Framework::Input::Keyboard
 {
 	enum class State
 	{
