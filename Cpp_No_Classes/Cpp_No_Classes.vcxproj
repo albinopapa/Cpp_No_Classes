@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Buildings.cpp" />
     <ClCompile Include="COMInitializer.cpp" />
     <ClCompile Include="ComponentInitter.cpp" />
     <ClCompile Include="Direct3D.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Buildings.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="COMInitializer.h" />
