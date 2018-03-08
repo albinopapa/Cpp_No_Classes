@@ -1,24 +1,24 @@
 #pragma once
 
+#include "Framework.h"
+#include "Buildings.h"
 #include "Entity.h"
-#include "Graphics.h"
 #include "Grid.h"
 #include "Units.h"
 #include <vector>
-
-namespace Framework::Window{ struct _Window; }
 
 namespace Game
 {
 	struct _Game
 	{
-		_Game( Framework::Window::_Window& _window);
+		_Game( MainWindow& _window);
 
-		Framework::Graphics::_Graphics gfx;
-		Framework::Window::_Window& window;
+		Graphics gfx;
+		MainWindow& window;
 
 		std::vector<Units::_Unit> units;
 		std::vector<Buildings::_Building> buildings;
+		std::vector<_Entity*> selected;
 		Grid::_Grid grid;
 
 		Vec2i clickPos;
@@ -60,4 +60,6 @@ As a carpenter/builder this unit class is going to be building and purchasing th
 	The barracks is used to convert a unit to a military officer.
 	The stable is used to lodge and care for your horses.
 	The port is used to buy fish, or convert a unit to a naval officer.
+
+
 */

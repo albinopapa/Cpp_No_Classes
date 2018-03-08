@@ -1,16 +1,12 @@
 #pragma once
 
-#include "MathTypes.h"
+#include "Framework.h"
 
 enum class Team
 {
 	Red, Blue
 };
 
-namespace Buildings
-{
-	struct _Building;
-}
 namespace Game
 {
 	enum class EntityCategory
@@ -24,11 +20,13 @@ namespace Game
 	struct _Entity
 	{
 		EntityCategory category;
-		Math::Vector::_Vec2<float> position = { 400.f,300.f };
-		Math::Vector::_Vec2<float> velocity = { 0.f,0.f };
+		Vec2f position = { 400.f,300.f };
+		Vec2f velocity = { 0.f,0.f };
 		Team team = Team::Red;
 	};
 
-	Math::Vector::_Vec2<float> GetPosition( const _Entity& entity );
-	Math::Vector::_Vec2<float> GetVelocity( const _Entity& entity );
+	Vec2f GetPosition( const _Entity& entity );
+	Vec2f GetVelocity( const _Entity& entity );
+	void SetPosition( _Entity& entity, const Vec2f& Position );
+	void SetVelocity( _Entity& entity, const Vec2f& Velocity );
 }

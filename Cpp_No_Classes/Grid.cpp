@@ -5,7 +5,23 @@
 #include <limits>
 
 namespace Game
-{
+{	
+	// Private forward declarations
+	namespace Grid
+	{
+		Cell::_Cell& Cell( _Grid& grid, size_t idx );
+
+		void FindPath( _Path& path, const Vec2f& start, const Vec2f& end );
+		Vec2f NextPathPosition( _Path& path, const Vec2f& curPos );
+		void ClearOpenList( _Path& path );
+		void ClearVisitedList( _Path& path );
+		void ClearPathToGoal( _Path& path );
+		void SetStartAndGoal( _Path& path, Cell::_Cell start, Cell::_Cell end );
+		void ContinuePath( _Path& path );
+		void PathOpened( _Path& path, int X, const int Y, float newCost, Cell::_Cell* _parent );
+		Cell::_Cell* GetNextCell( _Path& path );
+	}
+
 	namespace Cell
 	{
 		_Cell::_Cell( _Cell* _parent, int X, int Y, const Grid::_Grid& grid )
@@ -40,11 +56,9 @@ namespace Game
 		{
 			cell.isHilighted = false;
 		}
-		void Draw( const _Cell& cell, int32_t X, int32_t Y, Framework::Graphics::_Graphics& gfx )
+		void Draw( const _Cell& cell, int32_t X, int32_t Y, Graphics& gfx )
 		{
-			using Framework::Graphics::_Color;
-			
-			const _Color base = []( const CellTerrainType t_type )->_Color
+			const Color base = []( const CellTerrainType t_type )->Color
 			{
 				switch( t_type )
 				{
@@ -63,28 +77,12 @@ namespace Game
 					default:
 						return { 0,0,0 };
 				}
-			}(cell.terrain);
-			
-			if( cell.isHilighted )
-			{
-				const auto h_color = cell.hilight_color;
+			}( cell.terrain );
 
-				const uint32_t srcA1 = Framework::Graphics::GetA( h_color );
-				const uint32_t srcR1 = (Framework::Graphics::GetR( h_color ) * srcA1)>>8;
-				const uint32_t srcG1 = (Framework::Graphics::GetG( h_color ) * srcA1)>>8;
-				const uint32_t srcB1 = (Framework::Graphics::GetB( h_color ) * srcA1)>>8;
+			const auto c = ( cell.isHilighted ) ?
+				cell.hilight_color.AlphaBlend( base ) : base;
 
-				const uint32_t srcA2 = 255 - srcA1;
-				const uint32_t srcR2 = (Framework::Graphics::GetR( base ) * srcA2) >> 8;
-				const uint32_t srcG2 = (Framework::Graphics::GetG( base ) * srcA2) >> 8;
-				const uint32_t srcB2 = (Framework::Graphics::GetB( base ) * srcA2) >> 8;
-
-				const _Color c = { srcR1 + srcR2, srcG1 + srcG2, srcB1 + srcG2 };
-
-				Framework::Graphics::PutPixel( gfx, X, Y, c );
-			}
-
-			Framework::Graphics::PutPixel( gfx, X, Y, base );
+			gfx.PutPixel( X, Y, c );
 		}
 
 		float GetF( const _Cell& _this )
@@ -113,6 +111,14 @@ namespace Game
 	}
 	namespace Grid
 	{
+
+		_Path::_Path( _Grid& _grid )
+			:
+			grid( _grid )
+		{
+
+		}
+
 		_Grid::_Grid( size_t Width, size_t Height )
 			:
 			width( static_cast< int32_t >( Width ) ),
@@ -153,15 +159,19 @@ namespace Game
 
 		void HighlightCell( _Grid& grid, const Vec2i& gridPos )
 		{
-			assert( gridPos.x >= 0 && gridPos.y >= 0 );
-			assert( gridPos.x < grid.width && gridPos.y < grid.height );
+			const auto x = gridPos.x / Cell::_Cell::cell_size;
+			const auto y = gridPos.y / Cell::_Cell::cell_size;
+
+			assert( x >= 0 && y >= 0 );
+			assert( x < grid.width && y < grid.height );
 
 			if( grid.hilightedCell )
 			{
 				Cell::Unhighlight( *grid.hilightedCell );
 			}
 
-			const auto idx = gridPos.x + ( gridPos.y * grid.width );
+			const auto idx = x + ( y * grid.width );
+
 			if(idx >= 0 && idx < grid.width * grid.height)
 			{
 				Highlight( grid.cells[ idx ] );
@@ -169,7 +179,7 @@ namespace Game
 			}
 		}
 
-		size_t FlattenIndex( const _Grid& grid, const int X, const int Y )
+		size_t FlattenIndex( const _Grid& grid, const int32_t X, const int32_t Y )
 		{
 			assert( X >= 0 );
 			assert( X < grid.width );
@@ -192,39 +202,41 @@ namespace Game
 				worldPos.y / Cell::_Cell::cell_size 
 			);
 		}
-		Cell::_Cell& Cell( _Grid& grid, int X, int Y )
-		{
-			const auto idx = FlattenIndex( grid, X, Y );
-			return Cell( grid, idx );
-		}
 		Cell::_Cell& Cell( _Grid& grid, size_t idx )
 		{
 			return grid.cells[ idx ];
 		}
-
-		void Draw( const _Grid& grid, Framework::Graphics::_Graphics& gfx )
+		Cell::_Cell& Cell( _Grid& grid, int32_t X, int32_t Y )
 		{
+			const auto idx = FlattenIndex( grid, X, Y );
+			return Cell( grid, idx );
+		}
+
+		void Draw( const _Grid& grid, Graphics& gfx )
+		{
+			constexpr auto c_size = int32_t( Cell::_Cell::cell_size );
+
 			for( int32_t y = 0; y < grid.height; ++y )
 			{
-				const auto row = y * grid.width;
-				const auto cy = y * Cell::_Cell::cell_size;
+				const int32_t row = y * grid.width;
+				const int32_t cy = y * c_size;
 
 				for( int32_t x = 0; x < grid.width; ++x )
 				{
-					const auto idx = x + row;
-					const auto cx = x * Cell::_Cell::cell_size;
+					const auto idx = size_t( x + row );
+					const auto cx = x * c_size;
 					Cell::Draw( grid.cells[ idx ], cx, cy, gfx );
 				}
 			}
 		}
 
-		void FindPath( _Grid& grid, const Vec2f& start, const Vec2f& end)
+		void FindPath( _Path& path, const Vec2f& start, const Vec2f& end)
 		{
-			if( !grid.startInitialized )
+			if( !path.startInitialized )
 			{
-				ClearOpenList( grid );
-				ClearVisitedList( grid );
-				ClearPathToGoal( grid );
+				ClearOpenList( path );
+				ClearVisitedList( path );
+				ClearPathToGoal( path );
 
 				Cell::_Cell startCell, endCell;
 				startCell.x = int( start.x ) / Cell::_Cell::cell_size;
@@ -232,119 +244,119 @@ namespace Game
 				endCell.x = int( end.x ) / Cell::_Cell::cell_size;
 				endCell.y = int( end.y ) / Cell::_Cell::cell_size;
 
-				SetStartAndGoal( grid, startCell, endCell );
-				grid.startInitialized = true;
+				SetStartAndGoal( path, startCell, endCell );
+				path.startInitialized = true;
 			}
-			if( grid.startInitialized )
+			if( path.startInitialized )
 			{
-				ContinuePath( grid );
+				ContinuePath( path );
 			}
 		}
-		Vec2f NextPathPosition( _Grid& grid, const Vec2f& curPos )
+		Vec2f NextPathPosition( _Path& path, const Vec2f& curPos )
 		{
 			constexpr float sqRadius = Cell::_Cell::cell_size * Cell::_Cell::cell_size;
 
-			if( grid.pathToGoal.empty() ) 
+			if( path.pathToGoal.empty() ) 
 			{
 				return curPos;
 			}
 
-			const auto nextPos = grid.pathToGoal.back();
-			auto sqDist = Math::Vector::DistanceSq( curPos, nextPos );
+			const auto nextPos = path.pathToGoal.back();
+			auto sqDist = curPos.DistanceSq( nextPos );
 
 			if( sqDist < sqRadius )
 			{
-				grid.pathToGoal.pop_back();
+				path.pathToGoal.pop_back();
 			}
 
 			return nextPos;
 		}
 
-		void ClearOpenList( _Grid& grid )
+		void ClearOpenList( _Path& path )
 		{
-			grid.openList.clear();
+			path.openList.clear();
 		}
-		void ClearVisitedList( _Grid& grid )
+		void ClearVisitedList( _Path& path )
 		{
-			grid.visitedList.clear();
+			path.visitedList.clear();
 		}
-		void ClearPathToGoal( _Grid& grid )
+		void ClearPathToGoal( _Path& path )
 		{
-			grid.pathToGoal.clear();
+			path.pathToGoal.clear();
 		}
 
-		void SetStartAndGoal( _Grid& grid, Cell::_Cell start, Cell::_Cell end )
+		void SetStartAndGoal( _Path& path, Cell::_Cell start, Cell::_Cell end )
 		{
-			auto& c_start = grid.cells[ start.x + ( start.y * grid.width ) ];
-			auto& c_end = grid.cells[ end.x + ( end.y * grid.width ) ];
-			c_start = Cell::_Cell( nullptr, start.x, start.y, grid );
-			c_end = Cell::_Cell( &end, end.x, end.y, grid );
+			auto& c_start = path.grid.cells[ start.x + ( start.y * path.grid.width ) ];
+			auto& c_end = path.grid.cells[ end.x + ( end.y * path.grid.width ) ];
+			c_start = Cell::_Cell( nullptr, start.x, start.y, path.grid );
+			c_end = Cell::_Cell( &end, end.x, end.y, path.grid );
 
 			c_start.g = 0;
-			c_start.h = ManhattenDistance( *grid.start, *grid.end );
+			c_start.h = ManhattenDistance( *path.start, *path.end );
 			
-			grid.start = &c_start;
-			grid.end = &c_end;
+			path.start = &c_start;
+			path.end = &c_end;
 			
-			grid.openList.push_back( grid.start );
+			path.openList.push_back( path.start );
 		}
 
-		void ContinuePath( _Grid& grid )
+		void ContinuePath( _Path& path )
 		{
-			if( grid.openList.empty() ) return;
+			if( path.openList.empty() ) return;
 
-			Cell::_Cell* curCell = GetNextCell( grid );
+			Cell::_Cell* curCell = GetNextCell( path );
 
-			if( curCell->id == grid.end->id )
+			if( curCell->id == path.end->id )
 			{
-				grid.end->parent = curCell->parent;
+				path.end->parent = curCell->parent;
 
-				for( Cell::_Cell* getPath = grid.end; getPath != nullptr; getPath = getPath->parent )
+				for( Cell::_Cell* getPath = path.end; getPath != nullptr; getPath = getPath->parent )
 				{
 					constexpr auto half_size = int32_t( Cell::_Cell::cell_size / 2 );
 					const auto cellPosX = ( getPath->x * int32_t( Cell::_Cell::cell_size ) ) + half_size;
 					const auto cellPosY = ( getPath->y * int32_t( Cell::_Cell::cell_size ) ) + half_size;
 
 					const auto worldPos = Vec2f( float( cellPosX ), float( cellPosY ) );
-					grid.pathToGoal.push_back( worldPos );
+					path.pathToGoal.push_back( worldPos );
 				}
 
-				grid.goalFound = true;
+				path.goalFound = true;
 			}
 			else
 			{
 				// North cell
-				PathOpened( grid, curCell->x, curCell->y - 1, curCell->g + 1, curCell );
+				PathOpened( path, curCell->x, curCell->y - 1, curCell->g + 1, curCell );
 				// NEast cell
-				PathOpened( grid, curCell->x + 1, curCell->y - 1, curCell->g + 1.4f, curCell );
+				PathOpened( path, curCell->x + 1, curCell->y - 1, curCell->g + 1.4f, curCell );
 				// East cell
-				PathOpened( grid, curCell->x + 1, curCell->y, curCell->g + 1, curCell );
+				PathOpened( path, curCell->x + 1, curCell->y, curCell->g + 1, curCell );
 				// SEast cell
-				PathOpened( grid, curCell->x + 1, curCell->y + 1, curCell->g + 1.4f, curCell );
+				PathOpened( path, curCell->x + 1, curCell->y + 1, curCell->g + 1.4f, curCell );
 				// South cell
-				PathOpened( grid, curCell->x, curCell->y + 1, curCell->g + 1, curCell );
+				PathOpened( path, curCell->x, curCell->y + 1, curCell->g + 1, curCell );
 				// SWest cell
-				PathOpened( grid, curCell->x - 1, curCell->y + 1, curCell->g + 1.4f, curCell );
+				PathOpened( path, curCell->x - 1, curCell->y + 1, curCell->g + 1.4f, curCell );
 				// West cell
-				PathOpened( grid, curCell->x - 1, curCell->y, curCell->g + 1, curCell );
+				PathOpened( path, curCell->x - 1, curCell->y, curCell->g + 1, curCell );
 				// NWest cell
-				PathOpened( grid, curCell->x - 1, curCell->y - 1, curCell->g + 1.4f, curCell );
+				PathOpened( path, curCell->x - 1, curCell->y - 1, curCell->g + 1.4f, curCell );
 
-				auto beg = grid.openList.begin();
-				auto end = grid.openList.end();
+				auto beg = path.openList.begin();
+				auto end = path.openList.end();
 				auto remit = std::remove_if(
 					beg, end, [ curCell ]( const Cell::_Cell* node )
 				{
 					return curCell->id == node->id;
 				} );
 
-				grid.openList.erase( remit, end );
+				path.openList.erase( remit, end );
 			}
 		}
-		void PathOpened( _Grid& grid, int X, const int Y, float newCost, Cell::_Cell* _parent )
+		void PathOpened( _Path& path, int X, const int Y, float newCost, Cell::_Cell* _parent )
 		{
 			// Caclulate this cell's position
-			const auto id = FlattenIndex( grid, X, Y );
+			const auto id = FlattenIndex( path.grid, X, Y );
 
 			// Used to find a cell in a list
 			auto match_id = [ id ]( const Cell::_Cell* cell )
@@ -360,21 +372,21 @@ namespace Game
 			};
 
 			// Determine if this cell is less expensive to travel through
-			auto child = Cell::_Cell( _parent, X, Y, grid );
+			auto child = Cell::_Cell( _parent, X, Y, path.grid );
 			child.g = newCost;
-			child.h = ManhattenDistance( *_parent, *grid.end );
+			child.h = ManhattenDistance( *_parent, *path.end );
 
 			// Return if cell is in open and is already occupied or in visited lists 
-			if( is_in_list( grid.openList ) )
+			if( is_in_list( path.openList ) )
 			{
-				if( IsBlocked( *grid.openList[ id ] ) ||
-					is_in_list( grid.visitedList ) )
+				if( IsBlocked( *path.openList[ id ] ) ||
+					is_in_list( path.visitedList ) )
 				{
 					return;
 				}
 
 
-				auto* node = grid.openList[ id ];
+				auto* node = path.openList[ id ];
 				float newF = child.g + newCost + node->h;
 
 				if( newF > GetF( *node ) )
@@ -389,19 +401,19 @@ namespace Game
 			}
 			else
 			{
-				grid.cells[ id ] = child;
-				grid.openList.push_back( &grid.cells[ id ] );
+				path.grid.cells[ id ] = child;
+				path.openList.push_back( &path.grid.cells[ id ] );
 			}
 			
 		}
-		Cell::_Cell* GetNextCell( _Grid& grid )
+		Cell::_Cell* GetNextCell( _Path& path )
 		{
 			float bestValue = std::numeric_limits<float>::max();
 			int cellIndex = -1, i = 0;
 
 			Cell::_Cell* nextCell = nullptr;
 
-			for( auto* node : grid.openList )
+			for( auto* node : path.openList )
 			{
 				const auto f = GetF( *node );
 				if( f < bestValue )
@@ -414,18 +426,22 @@ namespace Game
 
 			if( cellIndex >= 0 )
 			{
-				nextCell = grid.openList[ cellIndex ];
-				grid.visitedList.push_back( nextCell );
+				nextCell = path.openList[ cellIndex ];
+				path.visitedList.push_back( nextCell );
 
-				if( grid.openList.size() > 1 )
-					std::swap( grid.openList[ cellIndex ], grid.openList.back() );
+				if( path.openList.size() > 1 )
+					std::swap( path.openList[ cellIndex ], path.openList.back() );
 
-				if( grid.openList.size() >= 1 )
-					grid.openList.pop_back();
+				if( path.openList.size() >= 1 )
+					path.openList.pop_back();
 			}
 
 			return nextCell;
 		}
-
+		std::vector<Vec2f> GetPath( _Path& path )
+		{
+			std::reverse( path.pathToGoal.begin(), path.pathToGoal.end() );
+			return path.pathToGoal;
+		}
 	}
 }

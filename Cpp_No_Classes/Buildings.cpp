@@ -1,4 +1,5 @@
 #include "Buildings.h"
+#include "Entity.h"
 #include "Units.h"
 
 // Building definitions
@@ -64,16 +65,28 @@ namespace Game::Buildings
 		int32_t _width,
 		int32_t _height,
 		int32_t _hp,
-		int32_t num_occupants, 
+		int32_t _num_occupants,
 		Team _team,
 		Type _type )
-	{}
+		:
+		fire_resistance( _fire_resistance ),
+		melee_resistance( _melee_resistance ),
+		projectile_resistance( _projectile_resistance ),
+		width( _width ),
+		height( _height ),
+		hp( _hp ),
+		num_occupants( _num_occupants ),
+		type( _type )
+	{
+		entity.team = _team;
+	}
 
 	_Building::operator _Entity&( )
 	{
 		return entity;
 	}
-	_Building::operator const _Entity&( )const
+
+	_Building::operator const _Entity&( ) const
 	{
 		return entity;
 	}

@@ -1,13 +1,15 @@
 #pragma once
 
-#include "Color.h"
 #include "Framework.h"
-#include "MathTypes.h"
 #include <vector>
 
 namespace Game
 {
 	struct _Entity;
+	namespace Grid
+	{
+		struct _Grid;
+	}
 
 	namespace Cell
 	{
@@ -21,8 +23,7 @@ namespace Game
 			_Cell( _Cell* _parent, int X, int Y, const Grid::_Grid& grid );
 
 			static constexpr size_t cell_size = 16;
-			static constexpr Framework::Graphics::_Color hilight_color = 
-				Framework::Graphics::_Color{ 160ui8, 92ui8, 64ui8, 128ui8 };
+			static constexpr Color hilight_color = Color{ 160ui8, 92ui8, 64ui8, 128ui8 };
 
 			bool isHilighted = false;
 			CellTerrainType terrain;
@@ -50,19 +51,17 @@ namespace Game
 		float GetF( const _Cell& _this );
 		float ManhattenDistance( const _Cell& _this, const _Cell& end );
 
-		void Draw( const _Cell& cell, int32_t X, int32_t Y, Framework::Graphics::_Graphics& gfx );
+		void Draw( const _Cell& cell, int32_t X, int32_t Y, Graphics& gfx );
 
 	}
 	namespace Grid
 	{
-		struct _Grid
+		struct _Grid;
+		struct _Path
 		{
-			_Grid( size_t Width, size_t Height );
+			_Path( _Grid& _grid );
 
-			int32_t width, height;
-			std::vector<Cell::_Cell> cells;
-			Cell::_Cell* hilightedCell = nullptr;
-
+			_Grid& grid;
 			Cell::_Cell* start, *end;
 			std::vector<Vec2f> pathToGoal;
 			std::vector<Cell::_Cell*> openList;
@@ -70,7 +69,14 @@ namespace Game
 
 			bool startInitialized = false;
 			bool goalFound = false;
+		};
+		struct _Grid
+		{
+			_Grid( size_t Width, size_t Height );
 
+			int32_t width, height;
+			std::vector<Cell::_Cell> cells;
+			Cell::_Cell* hilightedCell = nullptr;
 		};
 
 		void AddEntity( _Grid& grid, const _Entity& entity );
@@ -79,23 +85,15 @@ namespace Game
 		const Game::_Entity& GetEntity( const _Grid& grid, const Vec2i& MouseClickPos );
 
 		void HighlightCell( _Grid& grid, const Vec2i& gridPos );
-		void Draw( const _Grid& grid, Framework::Graphics::_Graphics& gfx );
+		void Draw( const _Grid& grid, Graphics& gfx );
 
-		size_t FlattenIndex( const _Grid& grid, const int X, const int Y );
+		size_t FlattenIndex( const _Grid& grid, const int32_t X, const int32_t Y );
 		size_t FlattenIndex( const _Grid& grid, const Vec2f& worldPos );
 		size_t FlattenIndex( const _Grid& grid, const Vec2i& worldPos );
-		Cell::_Cell& Cell( _Grid& grid, int X, int Y );
+		Cell::_Cell& Cell( _Grid& grid, int32_t X, int32_t Y );
 
-		void FindPath( _Grid& grid, const Vec2f& start, const Vec2f& end );
-		Vec2f NextPathPosition( _Grid& grid, const Vec2f& curPos );
-
-		/*void ContinuePath( _Grid& grid );
-		void ClearOpenList( _Grid& grid );
-		void ClearVisitedList( _Grid& grid );
-		void ClearPathToGoal( _Grid& grid );
-		void SetStartAndGoal( _Grid& grid, Cell::_Cell start, Cell::_Cell end );
-		void PathOpened(
-			_Grid& grid, int X, const int Y, float newCost, Cell::_Cell* _parent );
-		Cell::_Cell* GetNextCell( _Grid& grid );*/
+		void FindPath( _Path& path, const Vec2f& start, const Vec2f& end );
+		Vec2f NextPathPosition( _Path& path, const Vec2f& curPos );
+		std::vector<Vec2f> GetPath( _Path& path );
 	}
 }

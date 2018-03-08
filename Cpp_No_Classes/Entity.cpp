@@ -2,12 +2,21 @@
 
 namespace Game
 {
-	Math::Vector::_Vec2<float> GetPosition( const _Entity& entity )
+	Vec2f GetPosition( const _Entity& entity )
 	{
 		return entity.position;
 	}
-	Math::Vector::_Vec2<float> GetVelocity( const _Entity& entity )
+	Vec2f GetVelocity( const _Entity& entity )
 	{
 		return entity.velocity;
 	}
+	void SetPosition( _Entity& entity, const Vec2f& Position )
+	{
+		entity.position = Position;
+	}
+	void SetVelocity( _Entity& entity, const Vec2f& Velocity )
+	{
+		entity.velocity = Velocity;
+	}
+
 }

@@ -1,7 +1,5 @@
 #include "Units.h"
-#include "Graphics.h"
 #include "Grid.h"
-#include "Framework.h"
 #include <cassert>
 
 
@@ -21,11 +19,14 @@ namespace Game::Units
 // Units base class method definitions
 namespace Game::Units
 {
-	namespace Graphics = Framework::Graphics;
 
-	_Unit::_Unit( float Attack, float HP, float Armor, Job _Job, Team _Team )
+	_Unit::_Unit( float Attack, float HP, float Armor, Job _Job, Team _Team, Grid::_Grid& grid )
 		:
-		attack( Attack ), hp( HP ), armor( Armor ), job( _Job )
+		attack( Attack ), 
+		hp( HP ), 
+		armor( Armor ), 
+		job( _Job ),
+		path( grid )
 	{
 		switch( job )
 		{
@@ -54,9 +55,10 @@ namespace Game::Units
 				vtable.Update = &Scout::Update;
 				break;
 		}
-
+		entity.team = _Team;
 		entity.category = Game::EntityCategory::Unit;
 	}
+
 	_Unit::operator _Entity&() 
 	{
 		return entity;
@@ -66,65 +68,55 @@ namespace Game::Units
 		return entity;
 	}
 
-	void Update( _Unit& unit, float dt, Grid::_Grid& grid )
+	void Update( _Unit& _this, float dt, Grid::_Grid& grid )
 	{
-		assert( unit.vtable.Update );
+		assert( _this.vtable.Update );
 
-		unit.vtable.Update( unit, dt, grid );
-		ClampToScreen( unit );
-	}
-	void ClampToScreen( _Unit& unit )
+		_this.vtable.Update( _this, dt, grid );
+		
+	}	
+	void Draw( const _Unit& _this, Graphics& gfx )
 	{
-		unit.entity.position.x = Math::clamp(
-			unit.entity.position.x, static_cast< float >( unit.rect.right ),
-			static_cast< float >( Graphics::ScreenWidth + unit.rect.left )
-		);
-		unit.entity.position.y = Math::clamp(
-			unit.entity.position.y, static_cast< float >( unit.rect.bottom ),
-			static_cast< float >( Graphics::ScreenHeight + unit.rect.top )
-		);
-	}
-	void Draw( Graphics::_Graphics& gfx, const _Unit& unit )
-	{
-		const auto color = unit.entity.team == Team::Red ?
-			Graphics::_Color{ 255, 0, 0 } : Graphics::_Color{ 0, 0, 255 };
+		const auto color = _this.entity.team == Team::Red ?
+			Colors::Red : Colors::Blue;
 
-		auto rect = Math::Rect::Translate( unit.rect, Units::GetPosition( unit ) );
+		const auto rect = _this.rect.Translate( GetPosition( _this ) );
 
-		Graphics::DrawRect(
-			gfx,
-			rect.left,
-			rect.top,
-			rect.right -  rect.left,
-			rect.bottom - rect.top,
-			color
-		);
+		gfx.DrawRect( static_cast< Recti >( rect ), color );
 	}
 
-	Vec2f GetPosition( const _Unit& unit )
+	Vec2f GetPosition( const _Unit& _this )
 	{
-		return Game::GetPosition( unit.entity );
+		return Game::GetPosition( _this.entity );
 	}
-	Job GetJob( const _Unit& unit )
+	Job GetJob( const _Unit& _this )
 	{
-		return unit.job;
+		return _this.job;
 	}
-	bool IsAlive( const _Unit& unit )
+	bool IsAlive( const _Unit& _this )
 	{
-		return unit.hp > 0.f;
+		return _this.hp > 0.f;
 	}
-	bool IsIdle( const _Unit& unit )
+	bool IsIdle( const _Unit& _this )
 	{
-		return unit.jobstate == JobState::isIdle;
+		return _this.jobstate == JobState::isIdle;
 	}
 
-	void SetAttackingUnit( _Unit& source, const _Unit& pAttacker )
+	void SetAttackingUnit( _Unit& _this, const _Unit& pAttacker )
 	{
-		source.p_attacker = &pAttacker;
+		_this.p_attacker = &pAttacker;
 	}
-	void SetPosition( _Unit& unit, const Vec2f position )
+	void SetPosition( _Unit& _this, const Vec2f position )
 	{
-		unit.entity.position = position;
+		_this.entity.position = position;
+	}
+	void SetTargetPosition( _Unit& _this, const Vec2f* position )
+	{
+		_this.targetPosition = position;
+	}
+	void SetJobPosition( _Unit& _this, const Vec2f position )
+	{
+		_this.jobLocation = position;
 	}
 }
 
@@ -135,8 +127,46 @@ namespace Game::Units::Builder
 	{
 		unit.jobstate = JobState::isPurchasing;
 	}
-	void HandleTransitioning( _Unit& unit, float dt )
+	void HandleTransitioning( _Unit& unit, float dt, Grid::_Grid& grid )
 	{
+		// Transitioning is when unit is carrying materials to warehouse or from market 
+
+		// If transitioning and no target is set, 
+		//		- if has materials to store
+		//			- Locate warehouse
+		//			- Check if has materials
+		//				- if no materials
+		//				- go to market
+		//		- if has materials to build
+		//			- Locate buildsite
+		//			- change state to isBuilding
+		// TODO: Add building locator abstraction
+		if(unit.targetPosition)
+		{
+			while( !unit.path.goalFound )
+			{
+				Grid::FindPath( unit.path, GetPosition( unit ), *unit.targetPosition );
+			}
+			if( unit.pathToGoal.empty() )
+			{
+				unit.pathToGoal = Grid::GetPath( unit.path );
+				
+			}
+			else
+			{
+				if( ( unit.jobLocation.DistanceSq( *unit.targetPosition ) <=
+					Cell::_Cell::cell_size * Cell::_Cell::cell_size ) )
+				{
+					unit.jobstate = JobState::isBuilding;
+				}
+				
+			}
+		}
+		else
+		{
+			unit.jobstate = JobState::isIdle;
+		}
+
 		unit.entity.position += ( unit.entity.velocity * dt );
 	}
 	void HandleAttacking( _Unit& unit )
@@ -149,7 +179,7 @@ namespace Game::Units::Builder
 			unit.jobstate = JobState::isIdle;
 		}
 	}
-	void HandlePurchasing( _Unit& unit, float dt )
+	void HandlePurchasing( _Unit& unit, float dt, Grid::_Grid& grid )
 	{
 		unit.entity.position += ( unit.entity.velocity * dt );
 	}
@@ -171,10 +201,10 @@ namespace Game::Units::Builder
 				HandleIdle( unit );
 				break;
 			case JobState::isPurchasing:
-				HandlePurchasing( unit, dt );
+				HandlePurchasing( unit, dt, grid );
 				break;
 			case JobState::isTransitioning:
-				HandleTransitioning( unit, dt );
+				HandleTransitioning( unit, dt, grid );
 				break;
 		}
 	}

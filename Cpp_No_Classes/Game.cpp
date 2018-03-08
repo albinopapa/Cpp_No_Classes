@@ -1,27 +1,21 @@
 #include "Game.h"
-#include "Window.h"
-#include "Framework.h"
 #include <random>
 
 namespace Game
 {
-	namespace Gfx = Framework::Graphics;
-	namespace Mouse = Framework::Input::Mouse;
-	namespace Keyboard = Framework::Input::Keyboard;
-	namespace Window = Framework::Window;
 
-	_Game::_Game( Window::_Window& _window )
+	_Game::_Game( MainWindow& _window )
 		:
 		window( _window ),
 		gfx( _window ),
-		grid( Gfx::ScreenWidth / 16, Gfx::ScreenHeight / 16 )
+		grid( Graphics::ScreenWidth / 16, Graphics::ScreenHeight / 16 )
 	{
 		{
-			auto& unit = units.emplace_back( Units::traits<Units::Job::Builder>(), Team::Red );
+			auto& unit = units.emplace_back( Units::traits<Units::Job::Builder>(), Team::Red, grid );
 			Units::SetPosition( unit, { 100.f,100.f } );
 		}
 		{
-			auto& unit = units.emplace_back( Units::traits<Units::Job::Builder>(), Team::Blue );
+			auto& unit = units.emplace_back( Units::traits<Units::Job::Builder>(), Team::Blue, grid );
 			Units::SetPosition( unit, { 600.f,600.f } );
 		}
 
@@ -33,34 +27,25 @@ namespace Game
 
 	void Go( _Game& game )
 	{
-		Gfx::BeginFrame( game.gfx, { 0,0,0 } );
+		game.gfx.BeginFrame();
 		UpdateModel( game );
 		ComposeFrame( game );
-		Gfx::EndFrame( game.gfx );
+		game.gfx.EndFrame();
 	}
 	void UpdateModel( _Game& game )
-	{
-		const auto mousePos = Mouse::GetPosition( Window::GetMouse( game.window ) );
-		Grid::HighlightCell( game.grid, mousePos );
-				
-		const auto goal = Vec2f( float( mousePos.x ), float( mousePos.y ) );
-
-		for( auto& unit : game.units )
+	{		
+		const auto mousePos = game.window.mouse.GetPos();
+		if( Graphics::ScreenRect.Contains( mousePos ) )
 		{
-			Units::Update( unit, .016f, game.grid );
-			const auto uniPos = Units::GetPosition( unit );
-			Grid::FindPath( game.grid, uniPos, goal );
-			while(!game.grid.goalFound)
-			{
-				Grid::FindPath( game.grid, uniPos, goal );
-			}
+			Grid::HighlightCell( game.grid, mousePos );			
 		}
+		
 	}
 	void ComposeFrame( _Game& game )
 	{
 		for( const auto& unit : game.units )
 		{
-			Units::Draw( game.gfx, unit );
+			Units::Draw( unit, game.gfx );
 		}
 	}
 }

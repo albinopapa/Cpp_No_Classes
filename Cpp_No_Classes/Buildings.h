@@ -1,6 +1,7 @@
 #pragma once
 
-#include <cstdint>
+#include "Entity.h"		// Included for Entity and Team
+#include <cstdint>		// Included for int32_t
 
 namespace Game
 {
@@ -123,10 +124,7 @@ namespace Game
 				Type _type );
 
 			operator _Entity&( );
-			operator const _Entity&( )const
-			{
-				return entity;
-			}
+			operator const _Entity&( )const;
 
 			_Entity entity = { EntityCategory::Building };
 
@@ -136,7 +134,10 @@ namespace Game
 			int32_t projectile_resistance;
 			int32_t width, height;
 			int32_t hp;
+			int32_t num_occupants;
 		};
+
+		
 	}
 
 }

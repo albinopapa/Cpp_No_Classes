@@ -1,172 +1,376 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Framework">
+    <Filter Include="Framework">
       <UniqueIdentifier>{0dedc40b-b5ef-4225-a20b-81523d82a859}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Framework">
-      <UniqueIdentifier>{461c3ae3-692d-4ae7-b57f-52b206dfd65b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Game">
+    <Filter Include="Game">
       <UniqueIdentifier>{f13e73ea-e7f6-444a-85ea-d2b940e0a2a8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Game">
-      <UniqueIdentifier>{23e34c02-31d5-4f35-9fc3-348ecfaf6eb5}</UniqueIdentifier>
+    <Filter Include="Game\Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\Framework\Imported">
-      <UniqueIdentifier>{c3509edb-09d4-46ca-8ec0-853848041c03}</UniqueIdentifier>
+    <Filter Include="Game\Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Source Files\Framework\Imported">
-      <UniqueIdentifier>{83f64433-c868-4ce5-a1fc-dc1e8d15f590}</UniqueIdentifier>
+    <Filter Include="Framework\Header Files">
+      <UniqueIdentifier>{9fd2a95b-6222-4e91-a040-6a246d06b8b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Log Files">
+      <UniqueIdentifier>{f4010595-2fba-47f5-9707-6b1af10369ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Shader Files">
+      <UniqueIdentifier>{5579f7ab-30d4-45c2-b5c8-ec868c312229}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Source Files">
+      <UniqueIdentifier>{cabb51ae-b2c5-4076-852b-dd9372314fc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header Files\Audio">
+      <UniqueIdentifier>{fd184ea7-90fe-4361-93fd-82a77addab64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header Files\Graphics">
+      <UniqueIdentifier>{6c2c1176-9f39-487f-bd3f-e259883e1221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header Files\ParticleEmitter">
+      <UniqueIdentifier>{55184954-77f1-4e05-bf7b-4de0f1766f97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header Files\Utilities">
+      <UniqueIdentifier>{f50b485d-d908-45fd-8b4f-249725376657}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header Files\ParticleEffect">
+      <UniqueIdentifier>{5f39aa81-3793-441b-8008-13c5fd3dafda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header Files\Particle">
+      <UniqueIdentifier>{e32e79c5-bed2-4d09-8d37-a49c027298fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Direct3D.cpp">
-      <Filter>Source Files\Framework</Filter>
+    <ClCompile Include="Framework\AlphaSprite.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Framework.cpp">
-      <Filter>Source Files\Framework</Filter>
+    <ClCompile Include="Framework\AnimatedSprite.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics.cpp">
-      <Filter>Source Files\Framework</Filter>
+    <ClCompile Include="Framework\Camera.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Keyboard.cpp">
-      <Filter>Source Files\Framework</Filter>
+    <ClCompile Include="Framework\COMInitializer.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files\Framework</Filter>
+    <ClCompile Include="Framework\ComponentInitter.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>Source Files\Framework</Filter>
+    <ClCompile Include="Framework\ConicalEmitter.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files\Framework</Filter>
+    <ClCompile Include="Framework\DXErr.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="Framework\DXException.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Units.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="Framework\Emitter.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="COMInitializer.cpp">
-      <Filter>Source Files\Framework\Imported</Filter>
+    <ClCompile Include="Framework\EmitterData.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentInitter.cpp">
-      <Filter>Source Files\Framework\Imported</Filter>
+    <ClCompile Include="Framework\Fireworks.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DXErr.cpp">
-      <Filter>Source Files\Framework\Imported</Filter>
+    <ClCompile Include="Framework\Flames.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DXException.cpp">
-      <Filter>Source Files\Framework\Imported</Filter>
+    <ClCompile Include="Framework\Font.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImageLoader.cpp">
-      <Filter>Source Files\Framework\Imported</Filter>
+    <ClCompile Include="Framework\FontSheet.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Logger.cpp">
-      <Filter>Source Files\Framework\Imported</Filter>
+    <ClCompile Include="Framework\Frametimer.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="Framework\Graphics.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="Framework\ImageLoader.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sprites.cpp">
-      <Filter>Source Files\Framework</Filter>
+    <ClCompile Include="Framework\Keyboard.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Logger.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\MainWindow.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Mouse.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Observer.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Particle.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\RadialEmitter.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\SingleEmitter.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Sound.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Sprite.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\SpriteSheet.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\StreamEmitter.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Text.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\TextFormat.cpp">
+      <Filter>Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\WaveBeam.cpp">
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Buildings.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Game\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Game\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Game\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Units.cpp">
+      <Filter>Game\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface.cpp">
+      <Filter>Game\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Game\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Color.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Direct3D.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="MathTypes.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprites.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="string_util.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
     <ClInclude Include="LeanWindows.h">
-      <Filter>Header Files\Framework</Filter>
+      <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files\Game</Filter>
+    <ClInclude Include="Framework\Visitor.h">
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Units.h">
-      <Filter>Header Files\Game</Filter>
+    <ClInclude Include="Framework\Resource.h">
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="COMInitializer.h">
-      <Filter>Header Files\Framework\Imported</Filter>
+    <ClInclude Include="Framework\Observer.h">
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentInitter.h">
-      <Filter>Header Files\Framework\Imported</Filter>
+    <ClInclude Include="Framework\Mouse.h">
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DXErr.h">
-      <Filter>Header Files\Framework\Imported</Filter>
+    <ClInclude Include="Framework\MessageType.h">
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DXException.h">
-      <Filter>Header Files\Framework\Imported</Filter>
+    <ClInclude Include="Framework\MainWindow.h">
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImageLoader.h">
-      <Filter>Header Files\Framework\Imported</Filter>
+    <ClInclude Include="Framework\Keyboard.h">
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Logger.h">
-      <Filter>Header Files\Framework\Imported</Filter>
-    </ClInclude>
-    <ClInclude Include="ChiliException.h">
-      <Filter>Header Files\Framework\Imported</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Header Files\Game</Filter>
+    <ClInclude Include="Framework\Camera.h">
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Buildings.h">
-      <Filter>Header Files</Filter>
+      <Filter>Game\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Game\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Game\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Units.h">
+      <Filter>Game\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface.h">
-      <Filter>Header Files</Filter>
+      <Filter>Game\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework.h">
+      <Filter>Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\XAudio\audiodefs.h">
+      <Filter>Framework\Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\XAudio\comdecl.h">
+      <Filter>Framework\Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Sound.h">
+      <Filter>Framework\Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\SoundEffect.h">
+      <Filter>Framework\Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\AlphaSprite.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\AnimatedSprite.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Colors.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Font.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\FontSheet.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Graphics.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ImageLoader.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Sprite.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\SpriteSheet.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Text.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\TextFormat.h">
+      <Filter>Framework\Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\XAudio\XAudio2.h">
+      <Filter>Framework\Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\XAudio\XAudio2fx.h">
+      <Filter>Framework\Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\XAudio\xma2defs.h">
+      <Filter>Framework\Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\aligned_ptr.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ChiliException.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ChiliMath.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ChiliWin.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\COMInitializer.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ComponentInitter.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\DXErr.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\DXException.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Exceptions.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Logger.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\StaticHandler.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ConicalEmitter.h">
+      <Filter>Framework\Header Files\ParticleEmitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Emitter.h">
+      <Filter>Framework\Header Files\ParticleEmitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\EmitterData.h">
+      <Filter>Framework\Header Files\ParticleEmitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\RadialEmitter.h">
+      <Filter>Framework\Header Files\ParticleEmitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\SingleEmitter.h">
+      <Filter>Framework\Header Files\ParticleEmitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\StreamEmitter.h">
+      <Filter>Framework\Header Files\ParticleEmitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Fireworks.h">
+      <Filter>Framework\Header Files\ParticleEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Flames.h">
+      <Filter>Framework\Header Files\ParticleEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\ParticleEffect.h">
+      <Filter>Framework\Header Files\ParticleEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\WaveBeam.h">
+      <Filter>Framework\Header Files\ParticleEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Frametimer.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Particle.h">
+      <Filter>Framework\Header Files\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Rect.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\SSE.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\SSE_Utils.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Vec2.h">
+      <Filter>Framework\Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="string_util.h">
+      <Filter>Framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="FramebufferVS.hlsl" />
-    <FxCompile Include="FramebufferPS.hlsl" />
+    <FxCompile Include="FramebufferPS.hlsl">
+      <Filter>Framework\Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="FramebufferVS.hlsl">
+      <Filter>Framework\Shader Files</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Framework\Tracelog.txt">
+      <Filter>Framework\Log Files</Filter>
+    </Text>
+    <Text Include="Framework\varlog.txt">
+      <Filter>Framework\Log Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

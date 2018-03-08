@@ -1,20 +1,12 @@
 #pragma once
 
-#include "Entity.h"
-#include "MathTypes.h"
-#include <cstdint>
+#include "Framework.h"	// Included for Graphics
+#include "Entity.h"		// Included for position and velocity
+#include "Grid.h"		// Included for Grid::Path
+#include <cstdint>		// Included for int32_t typedef
 
-namespace Framework::Graphics
-{
-	struct _Graphics;
-}
 namespace Game
 {
-	namespace Grid
-	{
-		struct _Cell;
-		struct _Grid;
-	}
 	namespace Units
 	{
 		enum class Job
@@ -124,22 +116,28 @@ namespace Game
 		struct _Unit
 		{
 			template<class Traits>
-			_Unit( Traits _traits, Team _team )
+			_Unit( Traits _traits, Team _team, Grid::_Grid& grid )
 				:
-				_Unit( _traits.attack, _traits.base_hp, _traits.armor, _traits.job, _team )
+				_Unit( _traits.attack, _traits.base_hp, _traits.armor, _traits.job, _team, grid )
 			{
 
 			}
-			_Unit( float Attack, float HP, float Armor, Job _Job, Team _Team );
+			_Unit( float Attack, float HP, float Armor, Job _Job, Team _Team, Grid::_Grid& grid );
 
 			operator _Entity&( );
 			operator const _Entity&( )const;
 
-			static constexpr Math::Rect::_Rect<float> rect = { -16,-32,16,32 };
-			static constexpr size_t max_aniframes = 16u;
+			static constexpr Rectf rect = { -16.f,-32.f,16.f,32.f };
+			static constexpr size_t max_aniframes = 16ull;
 
 			vTable_Unit vtable;
 			_Entity entity;
+			Grid::_Path path;
+			Vec2f jobLocation;
+			const Vec2f* targetPosition = nullptr;
+
+			std::vector<Vec2f> pathToGoal;
+
 			float speed		= 0.f;
 			float attack	= traits<Job::Builder>::attack;
 			float hp		= traits<Job::Builder>::base_hp;
@@ -164,20 +162,21 @@ namespace Game
 		}
 
 
-		void Update( _Unit& unit, float dt, Grid::_Grid& grid );
-		void ClampToScreen( _Unit& unit );
-		void Draw( Framework::Graphics::_Graphics& gfx, const _Unit& unit );
+		void Update( _Unit& _this, float dt, Grid::_Grid& grid );
+		void ClampToScreen( _Unit& _this );
+		void Draw( const _Unit& _this, Graphics& gfx );
 
 		// Getters
-		Vec2f GetPosition( const _Unit& unit );
-		Job GetJob( const _Unit& unit );
-		bool IsAlive( const _Unit& unit );
-		bool IsIdle( const _Unit& unit );
+		Vec2f GetPosition( const _Unit& _this );
+		Job GetJob( const _Unit& _this );
+		bool IsAlive( const _Unit& _this );
+		bool IsIdle( const _Unit& _this );
 
 		// Setters
-		void SetAttackingUnit( _Unit& source, const _Unit& pAttacker );
-		void SetPosition( _Unit& unit, const Vec2f position );
-
+		void SetAttackingUnit( _Unit& _this, const _Unit& pAttacker );
+		void SetPosition( _Unit& _this, const Vec2f position );
+		void SetTargetPosition( _Unit& _this, const Vec2f* position );
+		void SetJobPosition( _Unit& _this, const Vec2f position );
 	}
 
 }

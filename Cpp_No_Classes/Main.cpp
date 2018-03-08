@@ -1,19 +1,20 @@
-#include "Window.h"
 #include "Game.h"
 #include "string_util.h"
 #include "Framework.h"
 
 INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, INT )
 {
+	Beep( 750, 300 );
 	try
 	{
-		Framework::Window::_Window window;
+		auto instance = GetModuleHandle( nullptr );
+		auto args = GetCommandLine();
+		MainWindow window( instance, String::encode( args ).c_str() );
 		Game::_Game game( window );
 
-		while( !window.wants_to_quit )
+		while( window.ProcessMessage() )
 		{
 			Game::Go( game );
-			Framework::Window::ProcessMessages( window );
 		}
 	}
 	catch( const std::exception& e)

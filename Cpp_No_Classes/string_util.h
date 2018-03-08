@@ -23,7 +23,8 @@ namespace String
 	std::enable_if_t<is_char_type<T>::value,size_t> 
 		length( const T* str )
 	{
-		static_assert( is_char_type<T>::value, "Function only works with const char * or const wchar_t * types." );
+		static_assert( is_char_type<T>::value, 
+			"Function only works with const char * or const wchar_t * types." );
 		if constexpr( std::is_same_v<T,char> )
 		{
 			return strlen( str );
